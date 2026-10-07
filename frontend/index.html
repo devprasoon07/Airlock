@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Airlock security dashboard for protecting tool-using AI agents." />
+  <title>Airlock — Agent Firewall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Airlock dashboard">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 21s7-3.35 7-9.24V5.15L12 2.5 5 5.15v6.61C5 17.65 12 21 12 21Z" />
+            <path d="m8.9 11.7 2.05 2.05 4.2-4.45" />
+          </svg>
+        </span>
+        <span class="brand__copy"><strong>Airlock</strong><small>AI SECURITY</small></span>
+      </a>
+
+      <nav class="sidebar__nav" aria-label="Primary navigation">
+        <p class="nav-label">Workspace</p>
+        <a class="nav-link active" href="#dashboard" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="#agents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M8.5 12h.01M15.5 12h.01M9 15.5h6"/></svg>
+          <span>Agents</span><b class="nav-count">12</b>
+        </a>
+        <a class="nav-link" href="#policies">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 22s8-3.4 8-9.8V5l-8-3-8 3v7.2C4 18.6 12 22 12 22Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Policies</span>
+        </a>
+        <a class="nav-link" href="#sandboxes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 20V10l8-5 8 5v10"/><path d="M2 20h20M12 5V2M8 20v-4h8v4"/></svg>
+          <span>Sandboxes</span><b class="nav-count nav-count--blue">8</b>
+        </a>
+        <a class="nav-link" href="#audit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
+          <span>Audit logs</span>
+        </a>
+        <a class="nav-link" href="#red-team">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="m10.25 3.86-8.08 14A2 2 0 0 0 3.9 21h16.2a2 2 0 0 0 1.73-3.14l-8.08-14a2 2 0 0 0-3.46 0Z"/></svg>
+          <span>Red team</span>
+        </a>
+
+        <p class="nav-label nav-label--second">Administration</p>
+        <a class="nav-link" href="#integrations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><path d="m10.2 10.2 3.6 3.6M13 8h6M5 16v3h3"/></svg>
+          <span>Integrations</span>
+        </a>
+        <a class="nav-link" href="#settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.03.03a2 2 0 1 1-2.83 2.83l-.03-.03A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.05A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.88.34l-.03.03a2 2 0 1 1-2.83-2.83l.03-.03A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.05A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.88l-.03-.03a2 2 0 1 1 2.83-2.83l.03.03A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.05A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.03-.03a2 2 0 1 1 2.83 2.83l-.03.03A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.05A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__status">
+        <span class="status-orb" aria-hidden="true"></span>
+        <span><strong>Firewall online</strong><small>All services protected</small></span>
+      </div>
+    </aside>
+
+    <section class="main-wrapper" id="dashboard">
+      <header class="topbar">
+        <div class="topbar__start">
+          <button class="icon-button menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="topbar__heading">
+            <span class="eyebrow">Agent firewall</span>
+            <h1>Security dashboard</h1>
+          </div>
+        </div>
+        <div class="topbar__end">
+          <div class="period-tabs" role="tablist" aria-label="Reporting period">
+            <button type="button" role="tab" aria-selected="false">Daily</button>
+            <button type="button" role="tab" aria-selected="false">Weekly</button>
+            <button type="button" role="tab" class="active" aria-selected="true">Monthly</button>
+            <button type="button" role="tab" aria-selected="false">Yearly</button>
+          </div>
+          <button class="icon-button notification-button" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+            <span class="notification-dot" aria-hidden="true"></span>
+          </button>
+          <button class="profile" type="button" aria-label="Open user menu">
+            <span class="profile__avatar">AR</span>
+            <span class="profile__copy"><strong>Admin</strong><small>Security ops</small></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="dashboard-content">
+        <div id="page-dashboard" class="page-view active">
+        <section class="page-intro" aria-labelledby="page-title">
+          <div>
+            <p class="page-intro__kicker">OCT 01 — OCT 07, 2026</p>
+            <h2 id="page-title">Your agents are <span>protected.</span></h2>
+            <p>Review interception signals, policy enforcement, and the security posture of every tool-using agent.</p>
+          </div>
+          <button class="primary-action" id="redTeamBtn" type="button">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Run red-team suite</span>
+          </button>
+        </section>
+
+        <section class="top-grid" aria-label="Security overview">
+          <article class="card overview-card">
+            <header class="card-heading overview-card__heading">
+              <div>
+                <p class="card-kicker"><span class="mini-pulse"></span>Live protection</p>
+                <h3>Interception overview</h3>
+              </div>
+              <button class="subtle-button" type="button">View report <span aria-hidden="true">→</span></button>
+            </header>
+            <div class="overview-card__body">
+              <div class="overview-stats">
+                <div>
+                  <p class="overview-stats__value">142</p>
+                  <p class="overview-stats__label">threats intercepted<br />this month</p>
+                </div>
+                <div class="overview-stats__minor">
+                  <span class="trend trend--up">↑ 18.2%</span>
+                  <p>vs. last month</p>
+                </div>
+                <div class="policy-denials">
+                  <p class="policy-denials__value">34</p>
+                  <p>policy denials enforced</p>
+                </div>
+              </div>
+              <div class="chart-block">
+                <div class="chart-legend" aria-label="Interception trend legend">
+                  <span><i class="legend-swatch legend-swatch--rose"></i>Threats flagged</span>
+                  <span><i class="legend-swatch legend-swatch--violet"></i>Actions enforced</span>
+                </div>
+                <div class="chart-box chart-box--hero">
+                  <canvas id="heroChart" aria-label="Seven-day trend of threats flagged and actions enforced" role="img"></canvas>
+                </div>
+              </div>
+            </div>
+            <footer class="overview-card__footer">
+              <div class="micro-stat"><span class="micro-stat__icon micro-stat__icon--rose">!</span><span><small>Blocked</small><strong>87</strong></span></div>
+              <div class="micro-stat"><span class="micro-stat__icon micro-stat__icon--orange">↗</span><span><small>Sanitized</small><strong>21</strong></span></div>
+              <div class="micro-stat"><span class="micro-stat__icon micro-stat__icon--cyan">⌁</span><span><small>Sandboxed</small><strong>34</strong></span></div>
+              <div class="micro-stat"><span class="micro-stat__icon micro-stat__icon--violet">✓</span><span><small>Allowed</small><strong>512</strong></span></div>
+            </footer>
+          </article>
+
+          <article class="card taxonomy-card">
+            <header class="card-heading">
+              <div>
+                <p class="card-kicker">Threat signals</p>
+                <h3>Attack taxonomy</h3>
+              </div>
+              <button class="more-button" type="button" aria-label="More attack taxonomy options"><span></span><span></span><span></span></button>
+            </header>
+            <div class="taxonomy-card__plot">
+              <div class="donut-wrap">
+                <canvas id="donutChart" aria-label="Attack taxonomy distribution" role="img"></canvas>
+                <div class="donut-center"><strong>142</strong><span>signals</span></div>
+              </div>
+            </div>
+            <div class="taxonomy-legend" aria-label="Attack taxonomy legend">
+              <div class="taxonomy-item"><i class="legend-swatch legend-swatch--rose"></i><span><strong>33%</strong><small>Prompt injection</small></span></div>
+              <div class="taxonomy-item"><i class="legend-swatch legend-swatch--violet"></i><span><strong>28%</strong><small>Data exfiltration</small></span></div>
+              <div class="taxonomy-item"><i class="legend-swatch legend-swatch--cyan"></i><span><strong>27%</strong><small>Privilege escalation</small></span></div>
+              <div class="taxonomy-item"><i class="legend-swatch legend-swatch--amber"></i><span><strong>12%</strong><small>Tool hijacking</small></span></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="metric-grid" aria-label="Key security metrics">
+          <article class="metric-card metric-card--rose">
+            <div class="metric-card__texture metric-card__texture--bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="metric-card__top"><p>Threats blocked</p><span class="metric-chip">↑ 12%</span></div>
+            <div class="metric-card__bottom"><strong>87</strong><span>in the last 7 days</span></div>
+          </article>
+          <article class="metric-card metric-card--violet">
+            <div class="metric-card__texture metric-card__texture--wave" aria-hidden="true"></div>
+            <div class="metric-card__top"><p>Policy compliance</p><span class="metric-chip">Healthy</span></div>
+            <div class="metric-card__bottom"><strong>99.6%</strong><span>of tool calls reviewed</span></div>
+          </article>
+          <article class="metric-card metric-card--blue">
+            <div class="metric-card__texture metric-card__texture--line" aria-hidden="true"></div>
+            <div class="metric-card__top"><p>Code sandbox</p><span class="metric-chip">on-demand</span></div>
+            <div class="metric-card__bottom"><strong>1</strong><span>fresh temp dir per run_code call</span></div>
+          </article>
+          <article class="metric-card metric-card--amber">
+            <div class="metric-card__texture metric-card__texture--bars metric-card__texture--right" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="metric-card__top"><p>Attack success rate</p><span class="metric-chip">n=6 measured</span></div>
+            <div class="metric-card__bottom"><strong>0%</strong><span>with firewall · 2026-10-07</span></div>
+          </article>
+        </section>
+
+        <section class="bottom-grid" id="audit">
+          <article class="card activity-card">
+            <header class="card-heading">
+              <div>
+                <p class="card-kicker">Tamper-evident audit log</p>
+                <h3>Recent activity</h3>
+              </div>
+              <button class="subtle-button" type="button">View all <span aria-hidden="true">→</span></button>
+            </header>
+            <div class="activity-list">
+              <article class="activity-item">
+                <time datetime="2026-10-07T16:32:00">02 min ago</time>
+                <span class="activity-item__rail"><span class="activity-icon activity-icon--rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="m10.25 3.86-8.08 14A2 2 0 0 0 3.9 21h16.2a2 2 0 0 0 1.73-3.14l-8.08-14a2 2 0 0 0-3.46 0Z"/></svg></span></span>
+                <div><h4>Exfiltration attempt blocked</h4><p><code>agent-07x</code> tried to send CRM contacts to an external address.</p></div>
+              </article>
+              <article class="activity-item">
+                <time datetime="2026-10-07T16:29:00">05 min ago</time>
+                <span class="activity-item__rail"><span class="activity-icon activity-icon--violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span></span>
+                <div><h4>Least-privilege policy enforced</h4><p><code>agent-03a</code> was denied access to <code>/etc/shadow</code>.</p></div>
+              </article>
+              <article class="activity-item">
+                <time datetime="2026-10-07T16:22:00">12 min ago</time>
+                <span class="activity-item__rail"><span class="activity-icon activity-icon--cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 2 12 11M7.5 6.5 3 11a6.5 6.5 0 1 0 10 10l4.5-4.5"/><path d="m14 3 7 0-1 7"/></svg></span></span>
+                <div><h4>Prompt injection sanitized</h4><p>Hidden instructions stripped from web content for <code>agent-12f</code>.</p></div>
+              </article>
+              <article class="activity-item">
+                <time datetime="2026-10-07T16:16:00">18 min ago</time>
+                <span class="activity-item__rail"><span class="activity-icon activity-icon--mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span></span>
+                <div><h4>Sandboxed execution complete</h4><p><code>agent-01b</code> ran a CRM database query in an isolated workspace.</p></div>
+              </article>
+            </div>
+          </article>
+
+          <article class="card execution-card">
+            <header class="execution-card__header">
+              <div>
+                <p class="card-kicker">Agent firewall proxy</p>
+                <h3>Tool execution log</h3>
+              </div>
+              <div class="execution-card__actions">
+                <button class="outline-button" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add policy</button>
+                <button class="primary-small" type="button">Export</button>
+              </div>
+            </header>
+            <div class="table-toolbar">
+              <div class="filter-tabs" role="tablist" aria-label="Tool execution status filters">
+                <button type="button" class="active" data-filter="all">All</button>
+                <button type="button" data-filter="blocked">Blocked</button>
+                <button type="button" data-filter="sanitized">Sanitized</button>
+                <button type="button" data-filter="allowed">Allowed</button>
+              </div>
+              <label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.35-4.35"/></svg><input id="logSearch" type="search" placeholder="Search log" aria-label="Search execution log" /></label>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead><tr><th>Time</th><th>Agent</th><th>Tool / action</th><th>Risk</th><th>Status</th></tr></thead>
+                <tbody id="logRows">
+                  <tr data-status="blocked"><td>16:32:01</td><td><strong>agent-07x</strong></td><td><code>send_email</code></td><td><span class="risk risk--critical">Critical</span></td><td><span class="badge badge--blocked"><i></i>Blocked</span></td></tr>
+                  <tr data-status="blocked"><td>16:30:48</td><td><strong>agent-03a</strong></td><td><code>read /etc/shadow</code></td><td><span class="risk risk--critical">Critical</span></td><td><span class="badge badge--blocked"><i></i>Blocked</span></td></tr>
+                  <tr data-status="sanitized"><td>16:28:15</td><td><strong>agent-12f</strong></td><td><code>web_scrape</code></td><td><span class="risk risk--medium">Medium</span></td><td><span class="badge badge--sanitized"><i></i>Sanitized</span></td></tr>
+                  <tr data-status="allowed"><td>16:25:39</td><td><strong>agent-01b</strong></td><td><code>db_query</code></td><td><span class="risk risk--low">Low</span></td><td><span class="badge badge--allowed"><i></i>Allowed</span></td></tr>
+                  <tr data-status="sanitized"><td>16:22:10</td><td><strong>agent-09c</strong></td><td><code>file_write</code></td><td><span class="risk risk--high">High</span></td><td><span class="badge badge--sanitized"><i></i>Sanitized</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-footer">
+              <span id="logCount">Showing 1–5 of 142 events</span>
+              <div class="pagination" aria-label="Execution log pages"><button type="button" aria-label="Previous page">‹</button><button type="button" class="active">1</button><button type="button">2</button><button type="button">3</button><span>…</span><button type="button">18</button><button type="button" aria-label="Next page">›</button></div>
+            </footer>
+          </article>
+        </section>
+        </div>
+
+        <section id="page-agents" class="page-view" aria-labelledby="agents-title">
+          <div class="page-view__intro">
+            <div><p class="page-intro__kicker">WORKSPACE / AGENTS</p><h2 id="agents-title">Agent inventory</h2><p>Monitor every tool-using agent, its effective permissions, and the protection status enforced by the firewall.</p></div>
+            <button class="primary-action" type="button" data-toast="Agent registration is ready for your backend connector."><span>＋</span><span>Register agent</span></button>
+          </div>
+          <div class="page-stat-grid">
+            <article class="page-stat"><span class="page-stat__icon page-stat__icon--violet">◈</span><div><small>Registered agents</small><strong>12</strong><em>+2 this month</em></div></article>
+            <article class="page-stat"><span class="page-stat__icon page-stat__icon--mint">✓</span><div><small>Protected now</small><strong>11</strong><em>91.7% coverage</em></div></article>
+            <article class="page-stat"><span class="page-stat__icon page-stat__icon--rose">!</span><div><small>Needs review</small><strong>1</strong><em>agent-09c</em></div></article>
+            <article class="page-stat"><span class="page-stat__icon page-stat__icon--cyan">⌁</span><div><small>Tool calls today</small><strong>2,481</strong><em>99.6% inspected</em></div></article>
+          </div>
+          <article class="card data-page-card">
+            <div class="data-page-card__toolbar"><div class="filter-tabs page-filter-tabs"><button class="active" type="button" data-agent-filter="all">All agents</button><button type="button" data-agent-filter="protected">Protected</button><button type="button" data-agent-filter="review">Needs review</button></div><label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.35-4.35"/></svg><input id="agentSearch" type="search" placeholder="Search agents" /></label></div>
+            <div class="table-scroll"><table class="data-table page-table"><thead><tr><th>Agent</th><th>Purpose</th><th>Access level</th><th>Policy</th><th>Sandbox</th><th>Status</th><th>Action</th></tr></thead><tbody id="agentRows">
+              <tr data-agent-status="protected"><td><span class="entity-cell"><span class="entity-avatar entity-avatar--violet">WR</span><strong>agent-07x<small>Web-Researcher</small></strong></span></td><td>Web research &amp; summaries</td><td><span class="level level--medium">Scoped</span></td><td>Web safe v2</td><td><span class="status-dot status-dot--mint"></span>Isolated</td><td><span class="badge badge--allowed"><i></i>Protected</span></td><td><button class="row-action" type="button" data-agent-action="isolate">Isolate</button></td></tr>
+              <tr data-agent-status="protected"><td><span class="entity-cell"><span class="entity-avatar entity-avatar--cyan">DB</span><strong>agent-03a<small>DB-Copilot</small></strong></span></td><td>Read-only CRM queries</td><td><span class="level level--low">Read only</span></td><td>CRM least privilege</td><td><span class="status-dot status-dot--mint"></span>Isolated</td><td><span class="badge badge--allowed"><i></i>Protected</span></td><td><button class="row-action" type="button" data-agent-action="isolate">Isolate</button></td></tr>
+              <tr data-agent-status="protected"><td><span class="entity-cell"><span class="entity-avatar entity-avatar--rose">CS</span><strong>agent-12f<small>Customer-Support</small></strong></span></td><td>Ticket triage &amp; reply</td><td><span class="level level--high">Elevated</span></td><td>Support tools v4</td><td><span class="status-dot status-dot--mint"></span>Isolated</td><td><span class="badge badge--allowed"><i></i>Protected</span></td><td><button class="row-action" type="button" data-agent-action="isolate">Isolate</button></td></tr>
+              <tr data-agent-status="review"><td><span class="entity-cell"><span class="entity-avatar entity-avatar--amber">FM</span><strong>agent-09c<small>File-Manager</small></strong></span></td><td>Document classification</td><td><span class="level level--high">Elevated</span></td><td>File access v1</td><td><span class="status-dot status-dot--rose"></span>Paused</td><td><span class="badge badge--sanitized"><i></i>Review</span></td><td><button class="row-action row-action--danger" type="button" data-agent-action="quarantine">Quarantine</button></td></tr>
+              <tr data-agent-status="protected"><td><span class="entity-cell"><span class="entity-avatar entity-avatar--mint">AN</span><strong>agent-01b<small>Analytics-Node</small></strong></span></td><td>Internal metrics queries</td><td><span class="level level--low">Read only</span></td><td>Analytics safe</td><td><span class="status-dot status-dot--mint"></span>Isolated</td><td><span class="badge badge--allowed"><i></i>Protected</span></td><td><button class="row-action" type="button" data-agent-action="isolate">Isolate</button></td></tr>
+            </tbody></table></div><footer class="table-footer"><span>Showing 1–5 of 12 agents</span><div class="pagination"><button type="button" class="active">1</button><button type="button">2</button><button type="button">3</button></div></footer>
+          </article>
+        </section>
+
+        <section id="page-policies" class="page-view" aria-labelledby="policies-title">
+          <div class="page-view__intro"><div><p class="page-intro__kicker">POLICY ENGINE / LEAST PRIVILEGE</p><h2 id="policies-title">Policy center</h2><p>Define exactly what each agent may read, call, and send. Deny by default, then grant the minimum required access.</p></div><button class="primary-action" type="button" id="createPolicyBtn"><span>＋</span><span>Create policy</span></button></div>
+          <div class="policy-layout"><div class="policy-list card"><div class="section-card-heading"><div><p class="card-kicker">12 total rules</p><h3>Active policies</h3></div><span class="verified-pill">✓ All synced</span></div><div id="policyRows" class="policy-rows">
+            <article class="policy-row" data-policy-name="Prompt injection guard"><span class="policy-row__icon policy-row__icon--rose">!</span><div><h4>Prompt injection guard</h4><p>Strip hidden instructions from untrusted content</p><div class="policy-tags"><span>Input scan</span><span>High confidence</span></div></div><label class="switch"><input type="checkbox" checked /><span></span></label></article>
+            <article class="policy-row" data-policy-name="Egress allowlist"><span class="policy-row__icon policy-row__icon--cyan">↗</span><div><h4>Egress allowlist</h4><p>Block external destinations outside approved domains</p><div class="policy-tags"><span>Network</span><span>3 domains</span></div></div><label class="switch"><input type="checkbox" checked /><span></span></label></article>
+            <article class="policy-row" data-policy-name="Sensitive path deny"><span class="policy-row__icon policy-row__icon--violet">⌁</span><div><h4>Sensitive path deny</h4><p>Prevent access to secrets and system credential files</p><div class="policy-tags"><span>Filesystem</span><span>14 paths</span></div></div><label class="switch"><input type="checkbox" checked /><span></span></label></article>
+            <article class="policy-row" data-policy-name="Tool rate limiter"><span class="policy-row__icon policy-row__icon--amber">↯</span><div><h4>Tool rate limiter</h4><p>Cap high-impact tools at 30 calls per minute</p><div class="policy-tags"><span>Runtime</span><span>30 / min</span></div></div><label class="switch"><input type="checkbox" /><span></span></label></article>
+          </div></div><aside class="policy-detail card"><div class="section-card-heading"><div><p class="card-kicker">Selected policy</p><h3>Prompt injection guard</h3></div><button class="more-button" type="button" aria-label="Policy options"><span></span><span></span><span></span></button></div><div class="policy-detail__status"><span class="status-orb"></span><strong>Enforced globally</strong><small>Updated 4 min ago</small></div><div class="rule-summary"><div><span>Scope</span><strong>All agents</strong></div><div><span>Action</span><strong>Sanitize + log</strong></div><div><span>Threshold</span><strong>0.82 confidence</strong></div></div><pre class="code-block"><code>{
+  <span>"policy_id"</span>: <b>"inject-guard-v2"</b>,
+  <span>"inspect"</span>: [<b>"input"</b>, <b>"tool_call"</b>, <b>"output"</b>],
+  <span>"on_match"</span>: <b>"sanitize_and_log"</b>,
+  <span>"least_privilege"</span>: <b>true</b>
+}</code></pre><button class="outline-button policy-test-btn" type="button">Run policy test <span>→</span></button></aside></div>
+        </section>
+
+        <section id="page-sandboxes" class="page-view" aria-labelledby="sandboxes-title">
+          <div class="page-view__intro"><div><p class="page-intro__kicker">RUNTIME / ISOLATION</p><h2 id="sandboxes-title">Sandbox fleet</h2><p>Every high-impact tool call runs inside a constrained environment with no implicit network or filesystem trust.</p></div><button class="primary-action" type="button" data-toast="A new sandbox will be provisioned when the runtime API is connected."><span>＋</span><span>Provision sandbox</span></button></div>
+          <div class="page-stat-grid"><article class="page-stat"><span class="page-stat__icon page-stat__icon--cyan">⌁</span><div><small>Active sandboxes</small><strong>8</strong><em>All healthy</em></div></article><article class="page-stat"><span class="page-stat__icon page-stat__icon--violet">◌</span><div><small>Isolated calls</small><strong>1,204</strong><em>+8.4% today</em></div></article><article class="page-stat"><span class="page-stat__icon page-stat__icon--rose">↯</span><div><small>Terminated</small><strong>3</strong><em>Policy violation</em></div></article><article class="page-stat"><span class="page-stat__icon page-stat__icon--mint">✓</span><div><small>Runtime health</small><strong>99.98%</strong><em>Last 24 hours</em></div></article></div>
+          <div class="sandbox-grid"><article class="card runtime-card"><div class="section-card-heading"><div><p class="card-kicker">Runtime health</p><h3>Fleet utilization</h3></div><span class="verified-pill">● Live</span></div><div class="runtime-bars"><div class="runtime-bar"><div><span>CPU allocation</span><strong>42%</strong></div><div class="progress-track"><span style="width:42%"></span></div></div><div class="runtime-bar"><div><span>Memory allocation</span><strong>61%</strong></div><div class="progress-track progress-track--violet"><span style="width:61%"></span></div></div><div class="runtime-bar"><div><span>Network egress</span><strong>18%</strong></div><div class="progress-track progress-track--cyan"><span style="width:18%"></span></div></div><div class="runtime-bar"><div><span>Storage volume</span><strong>34%</strong></div><div class="progress-track progress-track--amber"><span style="width:34%"></span></div></div></div></article><article class="card runtime-card"><div class="section-card-heading"><div><p class="card-kicker">Container profile</p><h3>Default restrictions</h3></div><span class="lock-label">🔒 Locked</span></div><ul class="check-list"><li><span>Read-only filesystem</span><b>Enabled</b></li><li><span>Outbound network</span><b>Allowlist only</b></li><li><span>Secret mounts</span><b>Blocked</b></li><li><span>Execution timeout</span><b>30 seconds</b></li><li><span>Audit stream</span><b>SHA-256 chained</b></li></ul></article></div>
+          <article class="card data-page-card sandbox-table-card"><div class="section-card-heading"><div><p class="card-kicker">8 environments</p><h3>Running containers</h3></div><button class="subtle-button" type="button" data-toast="Sandbox logs are available through the runtime API.">View runtime logs <span>→</span></button></div><div class="table-scroll"><table class="data-table page-table"><thead><tr><th>Container</th><th>Assigned agent</th><th>Image</th><th>CPU / memory</th><th>Network</th><th>Status</th></tr></thead><tbody><tr><td><strong>sbox-8f21</strong></td><td>agent-07x</td><td><code>aw-web:2.4</code></td><td>22% / 48%</td><td>Allowlist</td><td><span class="badge badge--allowed"><i></i>Healthy</span></td></tr><tr><td><strong>sbox-5ac0</strong></td><td>agent-03a</td><td><code>aw-db:1.8</code></td><td>12% / 32%</td><td>Disabled</td><td><span class="badge badge--allowed"><i></i>Healthy</span></td></tr><tr><td><strong>sbox-1d44</strong></td><td>agent-12f</td><td><code>aw-support:3.1</code></td><td>38% / 64%</td><td>Allowlist</td><td><span class="badge badge--sanitized"><i></i>Busy</span></td></tr></tbody></table></div></article>
+        </section>
+
+        <section id="page-audit" class="page-view" aria-labelledby="audit-title"><div class="page-view__intro"><div><p class="page-intro__kicker">COMPLIANCE / EVIDENCE</p><h2 id="audit-title">Audit explorer</h2><p>Inspect every decision made by the firewall. Each event is chained to the previous record so tampering is visible.</p></div><div class="intro-actions"><button class="outline-button" type="button" data-export="audit-csv">Export CSV</button><button class="primary-action" type="button" data-export="audit-json">Export JSON</button></div></div><div class="audit-banner"><span class="audit-banner__icon">✓</span><div><strong>Chain integrity verified</strong><p>Chain integrity is verified live — run a demo, then check /api/audit/verify.</p></div><code>endpoint: /api/audit/verify</code></div><article class="card data-page-card"><div class="data-page-card__toolbar"><div class="filter-tabs page-filter-tabs"><button class="active" type="button" data-audit-filter="all">All events</button><button type="button" data-audit-filter="blocked">Blocked</button><button type="button" data-audit-filter="allowed">Allowed</button><button type="button" data-audit-filter="sanitized">Sanitized</button></div><label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.35-4.35"/></svg><input id="auditSearch" type="search" placeholder="Search hash, agent, tool" /></label></div><div class="table-scroll"><table class="data-table page-table"><thead><tr><th>Timestamp</th><th>Event hash</th><th>Agent / tool</th><th>Decision</th><th>Reason</th><th>Verify</th></tr></thead><tbody id="auditRows"><tr data-audit-status="blocked"><td>Oct 07 · 16:32:01</td><td><code>sha256:a91f…e72c</code></td><td>agent-07x · send_email</td><td><span class="badge badge--blocked"><i></i>Blocked</span></td><td>External egress denied</td><td><button class="row-action" type="button" data-inspect="evt-01">Inspect</button></td></tr><tr data-audit-status="blocked"><td>Oct 07 · 16:30:48</td><td><code>sha256:45bc…9ad0</code></td><td>agent-03a · read_file</td><td><span class="badge badge--blocked"><i></i>Blocked</span></td><td>Sensitive path</td><td><button class="row-action" type="button" data-inspect="evt-02">Inspect</button></td></tr><tr data-audit-status="sanitized"><td>Oct 07 · 16:28:15</td><td><code>sha256:77de…113a</code></td><td>agent-12f · web_scrape</td><td><span class="badge badge--sanitized"><i></i>Sanitized</span></td><td>Injection payload removed</td><td><button class="row-action" type="button" data-inspect="evt-03">Inspect</button></td></tr><tr data-audit-status="allowed"><td>Oct 07 · 16:25:39</td><td><code>sha256:6c20…b311</code></td><td>agent-01b · db_query</td><td><span class="badge badge--allowed"><i></i>Allowed</span></td><td>Policy matched</td><td><button class="row-action" type="button" data-inspect="evt-04">Inspect</button></td></tr></tbody></table></div><footer class="table-footer"><span>Sample rows — live data via /api/audit/verify</span><div class="pagination"><button class="active" type="button">1</button><button type="button">2</button><button type="button">3</button><button type="button">18</button></div></footer></article></section>
+
+        <section id="page-red-team" class="page-view" aria-labelledby="red-team-title"><div class="page-view__intro"><div><p class="page-intro__kicker">VALIDATION / ADVERSARIAL TESTING</p><h2 id="red-team-title">Red-team suite</h2><p>Measure attack success before and after the firewall, then tune policies against false positives on benign tasks.</p></div><button class="primary-action" type="button" id="runBenchmarkBtn"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run benchmark</span></button></div><div class="benchmark-layout"><article class="card benchmark-chart-card"><div class="section-card-heading"><div><p class="card-kicker">Attack success rate · 6 scenarios · gemini-2.5-flash · 2026-10-07</p><h3>Protection impact</h3></div><span class="verified-pill">↓ 20 pts</span></div><div class="chart-box chart-box--benchmark"><canvas id="benchmarkChart" aria-label="Before and after attack success rate by attack type" role="img"></canvas></div><div class="benchmark-legend"><span><i class="legend-swatch legend-swatch--rose"></i>Without firewall</span><span><i class="legend-swatch legend-swatch--violet"></i>With Airlock</span></div></article><article class="card benchmark-summary"><div class="section-card-heading"><div><p class="card-kicker">Suite result</p><h3>Protection summary</h3></div><span class="status-badge status-badge--mint">Passed</span></div><div class="big-result"><strong id="benchmarkAsr">0%</strong><span>attack success with firewall</span></div><div class="result-rows"><div><span>Leaked without firewall</span><strong>1 (T1-direct)</strong></div><div><span>Leaked with firewall</span><strong class="text-safe">0</strong></div><div><span>Suite size</span><strong>6 attacks + 10 benign</strong></div></div><div class="false-positive"><div><span>Benign task pass rate</span><strong>90%</strong></div><div class="progress-track progress-track--mint"><span style="width:90%"></span></div><small>1 false positive across 10 benign tasks (B4 — root-caused, fix shipped; re-run pending)</small></div></article></div><article class="card attack-suite-list"><div class="section-card-heading"><div><p class="card-kicker">Attack taxonomy</p><h3>Scenario coverage</h3></div><button class="subtle-button" type="button" data-toast="Custom attack scenarios will be available with the benchmark API.">Manage scenarios <span>→</span></button></div><div class="scenario-grid"><div><span class="scenario-icon scenario-icon--rose">↯</span><p>T1-direct<small>poisoned email</small></p><b>leaked → blocked</b></div><div><span class="scenario-icon scenario-icon--violet">↗</span><p>T1-paraphrase<small>reworded injection</small></p><b>no trigger</b></div><div><span class="scenario-icon scenario-icon--cyan">↑</span><p>T2-indirect-file<small>poisoned notes.txt</small></p><b>no trigger</b></div><div><span class="scenario-icon scenario-icon--amber">⌁</span><p>T3-indirect-web<small>poisoned HTML comment</small></p><b>re-run pending</b></div><div><span class="scenario-icon scenario-icon--rose">↯</span><p>T5-escalation<small>guard-disable order</small></p><b>re-run pending</b></div><div><span class="scenario-icon scenario-icon--violet">↗</span><p>T6-multistep<small>split across 2 emails</small></p><b>no trigger</b></div></div></article></section>
+
+        <section id="page-integrations" class="page-view" aria-labelledby="integrations-title"><div class="page-view__intro"><div><p class="page-intro__kicker">DEPLOYMENT / CONNECTORS</p><h2 id="integrations-title">Integrations</h2><p>Wire the Airlock guard into your agent loop — see README for the 5-line integration.</p></div><button class="primary-action" type="button" data-toast="Integration setup will open when the backend is connected."><span>＋</span><span>Add integration</span></button></div><div class="integration-grid"><article class="card integration-card integration-card--connected"><div class="integration-card__top"><span class="integration-logo">⌁</span><span class="status-badge status-badge--mint">Connected</span></div><h3>Python guard package</h3><p>Inspect tool calls and results through the Airlock guard.</p><code>from airlock.guard import Guard</code><button class="subtle-button" type="button" data-toast="Connector settings are ready for your backend URL.">Configure <span>→</span></button></article><article class="card integration-card integration-card--connected"><div class="integration-card__top"><span class="integration-logo integration-logo--violet">◈</span><span class="status-badge status-badge--mint">Connected</span></div><h3>Guard toggle</h3><p>Run any demo with the firewall on or off via environment flag.</p><code>GUARD=on python -m airlock.demo_attack</code><button class="subtle-button" type="button" data-toast="Proxy configuration is ready for your backend URL.">Configure <span>→</span></button></article><article class="card integration-card"><div class="integration-card__top"><span class="integration-logo integration-logo--cyan">⚡</span><span class="status-badge">Not connected</span></div><h3>MCP tool gateway</h3><p>Protect remote Model Context Protocol servers with scoped credentials.</p><code>planned — see ARCHITECTURE.md</code><button class="outline-button" type="button" data-toast="MCP gateway setup is queued for backend integration.">Connect</button></article><article class="card integration-card"><div class="integration-card__top"><span class="integration-logo integration-logo--amber">↗</span><span class="status-badge">Optional</span></div><h3>Alert webhooks</h3><p>Send critical policy violations to Slack, PagerDuty, or your SIEM.</p><code>POST /v1/events</code><button class="outline-button" type="button" data-toast="Webhook setup is ready for a destination URL.">Connect</button></article></div></section>
+
+        <section id="page-settings" class="page-view" aria-labelledby="settings-title"><div class="page-view__intro"><div><p class="page-intro__kicker">ADMINISTRATION / CONTROLS</p><h2 id="settings-title">Firewall settings</h2><p>Control detection sensitivity, review workflows, and how security events reach your team.</p></div><button class="primary-action" type="button" id="saveSettingsBtn"><span>✓</span><span>Save changes</span></button></div><div class="settings-layout"><article class="card settings-card"><div class="section-card-heading"><div><p class="card-kicker">Detection engine</p><h3>Protection controls</h3></div><span class="verified-pill">Draft</span></div><div class="setting-row"><div><strong>Prompt injection sensitivity</strong><small>How aggressively untrusted instructions are flagged</small></div><output id="sensitivityValue">82%</output><input id="sensitivityRange" type="range" min="50" max="100" value="82" /></div><div class="setting-row"><div><strong>Require sandbox for high-risk tools</strong><small>Pause execution until an isolated runtime is available</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div><div class="setting-row"><div><strong>Block unknown egress destinations</strong><small>Only approved domains may receive agent data</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div><div class="setting-row"><div><strong>Human approval for critical actions</strong><small>Request review before send_email and file_write</small></div><label class="switch"><input type="checkbox" /><span></span></label></div></article><article class="card settings-card"><div class="section-card-heading"><div><p class="card-kicker">Notifications</p><h3>Alert routing</h3></div><span class="status-badge status-badge--mint">Healthy</span></div><div class="setting-row"><div><strong>Critical violations</strong><small>Immediate notification for exfiltration attempts</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div><div class="setting-row"><div><strong>Daily security digest</strong><small>Summary of decisions and benchmark changes</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div><div class="setting-row"><div><strong>Webhook destination</strong><small>security-ops@yourcompany.example</small></div><button class="row-action" type="button" data-toast="Notification destination editor is ready for backend integration.">Edit</button></div><div class="api-key-row"><div><strong>Workspace API key</strong><small>Used by the proxy and SDK clients</small></div><button class="outline-button" type="button" data-toast="API key rotation will be connected to your backend secret store.">Rotate key</button></div></article></div></section>
+      </main>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -16,9 +16,13 @@ DATA_ROOT = PROJECT_ROOT / "data"
 class FakeWorld:
     """A small, file-backed world with no access to the real machine."""
 
-    def __init__(self, inbox_path: str | Path = "data/inbox.json") -> None:
+    def __init__(self, inbox_path: str | Path = "data/inbox.json",
+                 data_root: str | Path | None = None,
+                 outbox_path: str | Path | None = None) -> None:
         self.inbox_path = self._project_path(inbox_path)
-        self._outbox_path = PROJECT_ROOT / "outbox.jsonl"
+        # Overridable so the benchmark can build isolated per-scenario worlds.
+        self._data_root = Path(data_root).resolve() if data_root else DATA_ROOT
+        self._outbox_path = Path(outbox_path).resolve() if outbox_path else PROJECT_ROOT / "outbox.jsonl"
         self._outbox_lock = threading.Lock()
         self.inbox = self._load_inbox(self.inbox_path)
 
@@ -71,10 +75,13 @@ class FakeWorld:
                         "unread": bool(email.get("unread")),
                     }
                 )
+
+        # Email clients conventionally show the newest messages first. This also
+        # means the inbox view matches the order a user sees in the UI.
+        matches.sort(key=lambda email: str(email.get("received_at", "")), reverse=True)
         return matches
 
-    @staticmethod
-    def _allowed_data_file(path: str | Path) -> Path:
+    def _allowed_data_file(self, path: str | Path) -> Path:
         raw = str(path).strip().replace("\\", "/")
         if not raw:
             raise ValueError("path is required")
@@ -92,7 +99,7 @@ class FakeWorld:
         if not relative.parts or relative.parts[0] not in {"files", "secrets"}:
             raise ValueError("only data/files and data/secrets are available")
 
-        allowed_root = (DATA_ROOT / relative.parts[0]).resolve()
+        allowed_root = (self._data_root / relative.parts[0]).resolve()
         resolved = (allowed_root.joinpath(*relative.parts[1:])).resolve()
         try:
             resolved.relative_to(allowed_root)
@@ -106,8 +113,7 @@ class FakeWorld:
         resolved = self._allowed_data_file(path)
         return resolved.read_text(encoding="utf-8")
 
-    @staticmethod
-    def _web_file(url: str | Path) -> Path:
+    def _web_file(self, url: str | Path) -> Path:
         raw = str(url).strip()
         if not raw:
             raise ValueError("url is required")
@@ -119,8 +125,8 @@ class FakeWorld:
         filename = Path(path_text).name
         if not filename.endswith(".html"):
             filename += ".html"
-        resolved = (DATA_ROOT / "web" / filename).resolve()
-        web_root = (DATA_ROOT / "web").resolve()
+        resolved = (self._data_root / "web" / filename).resolve()
+        web_root = (self._data_root / "web").resolve()
         try:
             resolved.relative_to(web_root)
         except ValueError as exc:

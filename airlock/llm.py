@@ -1,28 +1,52 @@
+"""Thin wrapper around an OpenAI-compatible chat endpoint (NVIDIA NIM)."""
+
 import os
-import anthropic
+import time
+
 from dotenv import load_dotenv
+from openai import OpenAI
 
-load_dotenv()
+load_dotenv(override=True)
 
-def chat(system: str, messages: list, tools: list = None):
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    model = os.environ.get("MODEL", "claude-haiku-4-5-20251001")
+_client: OpenAI | None = None
 
-    # If api_key is present, use it, else let the SDK discover auth (e.g. from environment/profile)
-    client_kwargs = {}
-    if api_key:
-        client_kwargs["api_key"] = api_key
 
-    client = anthropic.Anthropic(**client_kwargs)
+def _get_client() -> OpenAI:
+    global _client
+    if _client is None:
+        _client = OpenAI(
+            base_url=os.environ["NVIDIA_BASE_URL"],
+            api_key=os.environ["NVIDIA_API_KEY"],
+        )
+    return _client
 
-    kwargs = {
+
+def chat(system: str, messages: list, tools: list | None = None):
+    """Send a chat completion request and return the response object.
+
+    *tools* uses OpenAI function-calling format::
+
+        [{"type": "function", "function": {"name": ..., "parameters": ...}}]
+    """
+    model = os.environ.get("MODEL", "nvidia/nemotron-3-super-120b-a12b")
+    client = _get_client()
+
+    kwargs: dict = {
         "model": model,
         "max_tokens": 1024,
-        "system": system,
-        "messages": messages,
+        "temperature": 0.2,
+        "messages": [{"role": "system", "content": system}] + messages,
     }
 
     if tools:
         kwargs["tools"] = tools
+        kwargs["tool_choice"] = "auto"
 
-    return client.messages.create(**kwargs)
+    for attempt in range(3):
+        try:
+            return client.chat.completions.create(**kwargs)
+        except Exception as e:
+            if "503" in str(e) and attempt < 2:
+                time.sleep(2)
+                continue
+            raise

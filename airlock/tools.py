@@ -1,76 +1,106 @@
-"""Tool schemas and handlers for the unguarded S1 fake world."""
+"""Tool schemas (OpenAI function-calling format) and dispatcher."""
 
 from __future__ import annotations
 
 import json
 from typing import Any
 
+from airlock.guard.sandbox import run_sandboxed
 from airlock.world import FakeWorld
 
 
+# OpenAI function-calling format
 TOOL_DEFINITIONS: list[dict[str, Any]] = [
     {
-        "name": "search_emails",
-        "description": "Search the user's fake inbox. Use query 'unread' to list unread messages. Returns matching email headers.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"query": {"type": "string", "description": "Text to search, or 'unread'."}},
-            "required": ["query"],
-            "additionalProperties": False,
-        },
-    },
-    {
-        "name": "read_email",
-        "description": "Read one full email from the user's fake inbox by its id.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"id": {"type": "string", "description": "The email id returned by search_emails."}},
-            "required": ["id"],
-            "additionalProperties": False,
-        },
-    },
-    {
-        "name": "read_file",
-        "description": "Read a fake local file. Available roots are data/files/ and data/secrets/.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"path": {"type": "string", "description": "Relative path such as data/files/notes.txt."}},
-            "required": ["path"],
-            "additionalProperties": False,
-        },
-    },
-    {
-        "name": "browse_web",
-        "description": "Read one local fake company web page. Use a page name such as benefits.html; no real network access exists.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"url": {"type": "string", "description": "Fake page URL or filename."}},
-            "required": ["url"],
-            "additionalProperties": False,
-        },
-    },
-    {
-        "name": "send_email",
-        "description": "Send an email in the fake world. This appends the message to outbox.jsonl and returns sent.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "to": {"type": "string"},
-                "subject": {"type": "string"},
-                "body": {"type": "string"},
+        "type": "function",
+        "function": {
+            "name": "search_emails",
+            "description": "Search the user's inbox. Use query 'unread' to list unread messages.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Text to search, or 'unread'."},
+                },
+                "required": ["query"],
+                "additionalProperties": False,
             },
-            "required": ["to", "subject", "body"],
-            "additionalProperties": False,
         },
     },
     {
-        "name": "run_code",
-        "description": "Attempt to run code in the fake environment. The sandbox is intentionally unavailable in S1.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"code": {"type": "string"}},
-            "required": ["code"],
-            "additionalProperties": False,
+        "type": "function",
+        "function": {
+            "name": "read_email",
+            "description": "Read one full email by its id.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string", "description": "Email id from search_emails."},
+                },
+                "required": ["id"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": "Read a local file. Available under data/files/ and data/secrets/.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Relative path, e.g. data/files/notes.txt."},
+                },
+                "required": ["path"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "browse_web",
+            "description": "Read a local fake company web page by name, e.g. benefits.html.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "Fake page URL or filename."},
+                },
+                "required": ["url"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "send_email",
+            "description": "Send an email. Appends the message to outbox.jsonl and returns 'sent'.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "to": {"type": "string", "description": "Recipient address."},
+                    "subject": {"type": "string", "description": "Email subject."},
+                    "body": {"type": "string", "description": "Email body text."},
+                },
+                "required": ["to", "subject", "body"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "run_code",
+            "description": "Run code in the sandbox (unavailable in S1).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "code": {"type": "string", "description": "Code to execute."},
+                },
+                "required": ["code"],
+                "additionalProperties": False,
+            },
         },
     },
 ]
@@ -82,8 +112,12 @@ def _json_result(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, indent=2)
 
 
-def execute_tool(name: str, args: dict[str, Any], world: FakeWorld) -> str:
-    """Execute one named tool against the supplied fake world."""
+def execute_tool(name: str, args: dict[str, Any], world: FakeWorld, guard=None) -> str:
+    """Execute one named tool against the supplied fake world.
+
+    `guard` is optional (S1 compatibility). When a Guard is passed, run_code
+    executes inside the demo sandbox instead of returning the S1 stub.
+    """
     if name == "search_emails":
         return _json_result(world.search_emails(str(args.get("query", ""))))
     if name == "read_email":
@@ -99,5 +133,15 @@ def execute_tool(name: str, args: dict[str, Any], world: FakeWorld) -> str:
             str(args.get("body", "")),
         )
     if name == "run_code":
-        return "sandbox not built yet"
+        if guard is None:
+            return "sandbox not built yet"
+        res = run_sandboxed(str(args.get("code", "")))
+        if res["blocked"]:
+            return f"Sandbox refused: {res['blocked']}"
+        out = res["stdout"] or ""
+        if res["stderr"]:
+            out += ("\n" if out else "") + "[stderr]\n" + res["stderr"]
+        if res["timed_out"]:
+            out += ("\n" if out else "") + "[killed: timeout]"
+        return out or "(no output)"
     raise ValueError(f"Unknown tool: {name}")
